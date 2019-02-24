@@ -10,7 +10,7 @@ from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import OneHotEncoder
 import pickle
 
-print("Loading training data...")
+print("\nLoading training data...")
 # load training data
 test_data = pd.read_csv("data/peerLoanTraining.csv", engine='python', header=0)
 
@@ -55,17 +55,17 @@ latePaymentsModel = make_pipeline(
     RandomForestClassifier(random_state=42))
 
 # Fit the pipeline to the training data (fit is for both the preprocessing and the classifier)
-print("Training model ...")
+print("\nTraining model ...")
 latePaymentsModel.fit(X_train, y_train)
 
 # Save the trained model as a pickle file
-print("Saving model ...")
+print("\nSaving model ...")
 file = open('models/latePaymentsModel.pkl', 'wb')
 pickle.dump(latePaymentsModel, file)
 file.close()
 
 # load the pickled model
-print("Loading saved modes to make example predictions...")
+print("\nLoading saved model to make example predictions...")
 pickledModel = pickle.load(open('models/latePaymentsModel.pkl','rb'))
 
 # Make a prediction for a likely on time payer
@@ -83,7 +83,7 @@ payOnTimePrediction = {
     }
 payOnTimePredictionDf = pd.DataFrame.from_dict(payOnTimePrediction)
 
-print("\nClass probabilities for likely on time payer:")
+print("\nPredicting class probabilities for likely on-time payer:")
 print(pickledModel.predict_proba(payOnTimePredictionDf))
 
 # Prediction for a likely late payer
@@ -101,11 +101,11 @@ payLatePrediction = {
     }
 payLatePredictionDf = pd.DataFrame.from_dict(payLatePrediction)
 
-print("\nClass probabilities for a likely late payer:")
+print("\nPredicting class probabilities for a likely late payer:")
 print(pickledModel.predict_proba(payLatePredictionDf))
 
 # Predict class probabilities for a set of records using the test set
-print("\nClass probabilities for the test data set:")
+print("\nPredicting class probabilities for the test data set:")
 print(pickledModel.predict_proba(X_test))
 
 
