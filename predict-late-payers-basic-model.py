@@ -108,5 +108,5 @@ print(pickledModel.predict_proba(payLatePredictionDf))
 print("\nPredicting class probabilities for the test data set:")
 print(pickledModel.predict_proba(X_test))
 
-
-
+from sklearn.metrics import accuracy_score
+print("Accuracy:\n%s" % accuracy_score(y_test, pickledModel.predict(X_test)))

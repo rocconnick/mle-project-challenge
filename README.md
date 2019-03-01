@@ -25,7 +25,7 @@ Your project will consist of the following two tasks. Because the MLE role is pr
 ### Task 1: Deploy the Basic Model
 One of the data scientists has developed a basic model for predicting when loan holders will be late on their loan payment. Deploy this model and provide a REST API so other applications can submit a POST request and receive back prediction results. 
 
-First run the `predict-late-payers-basic-model.py` script which will train the model and save it using Python [pickle] (https://docs.python.org/3.7/library/pickle.html). Serve this model via REST API. Note, this starting model is very basic and not intended to have high prediction accuracy.
+First run the `predict-late-payers-basic-model.py` script which will train the model and save it using Python [pickle] (https://docs.python.org/3.7/library/pickle.html). Serve this model via REST API.
 
 In order run the `predict-late-payers-basic-model.py` you will need a Python 3.7.2 environment that has all required packages installed. These dependancies are captured in the following files:
 
@@ -56,7 +56,7 @@ Now that we have a basic model in production, the team would like you to improve
 ## Non-Requirements
 - **Completing in a specific amount of time.** Life is busy and chaotic. We understand you will not be able to work full time on this project.
 - **There is no need to run this code at scale.** Everything can be done on a laptop running [Docker Desktop](https://www.docker.com/products/docker-desktop), there is no need to deploy your code to a cloud service or cluster.
-- **A Certain level of prediction accuracy.** We're not interested in in getting the absolute best predictive accuracy for the model, don't devote too much time to improving the model. Rather we're interested in your understanding of data science concepts and your ability explain the decisions you made.
+- **A Certain level of prediction quality.** We're not interested in in getting the absolute best predictive performance for the model, don't devote too much time to improving the model. Rather we're interested in your understanding of data science concepts and your ability explain the decisions you made.
 - **An exact end result.** Two candidates given this assignment will find different solutions. Feel free to choose your own adventure as long as the base requirements are met.
 
 ## About the Dataset ##
