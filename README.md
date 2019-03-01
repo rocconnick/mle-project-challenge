@@ -45,7 +45,7 @@ Now that we have a basic model in production, the team would like you to improve
 #### Recommendations
 - We recommend using [Docker](https://docs.docker.com/get-started/) to containerize and deploy the model. However, feel free to use a different technology if there is one you are more familiar with.
 - In addition to Docker, you'll need to use several other components to create a scalable REST API. Google is your friend here, do some web searching to figure out what other components are needed to deploy a scaleable REST API for a Python application.
-- For the updated model use a traditional machine learning algorithm (no need for deep learning). Build out an 80% solution. Don't invest time in getting the maximum prediction accuracy. This is not a Kaggle competition.
+- For the updated model use a traditional machine learning algorithm (no need for deep learning). Build out an 80% solution. Don't invest time in getting the maximum prediction performance. This is not a Kaggle competition.
 
 ## Time management ##
 **We cannot stress these two enough:**
