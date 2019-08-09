@@ -4,28 +4,28 @@
 
 phData does not believe in traditional interviews as they do not reflect the working process in the real world. In the real world, you’ll be given project-based work as part of a team and will have time to perform research to solve the assigned task. As such, phData interviews are project-based.
 
-This project is for the machine learning engineer (MLE) role. We recognize there may be many definitions for a machine learning engineer, at phData we define this role as follows: 
+This project is for the machine learning engineer (MLE) role. We recognize there may be many definitions for a machine learning engineer, at phData we define this role as follows:
 
-> The MLE works in cooperation with data science teams by providing the engineering support for model deployment, monitoring, and retraining. The MLE is often not directly involved in the data discovery and model development process, though it is helpful for MLEs to have proficient domain knowledge in this area. See [this article] (https://www.oreilly.com/ideas/data-engineers-vs-data-scientists) for more discussion on these various roles.
+> The MLE works in cooperation with data science teams by providing the engineering support for model deployment, monitoring, and retraining. The MLE is often not directly involved in the data discovery and model development process, though it is helpful for MLEs to have proficient domain knowledge in this area. See [this article](https://www.oreilly.com/ideas/data-engineers-vs-data-scientists) for more discussion on these various roles.
 
 If you are more interested in another role such as dev ops or data engineering, please inform your contact you’ve been given the wrong project. After completing the assignment, you’ll be requested to provide a short demo of the work you’ve completed and the thought process you used.
 
-We would like to have the opportunity to review your solution before presenting. Please add your project to a private GitHub repository and share the link with our recruiter.  If you don’t have a GitHub account, you can create one for free at [github.com] (https://github.com/).
+We would like to have the opportunity to review your solution before presenting. Please add your project to a private GitHub repository and share the link with our recruiter.  If you don’t have a GitHub account, you can create one for free at [github.com](https://github.com/).
 
 ## Overview
 
-Our fictional client _PeerLoan_ is a [peer to peer lending] (https://en.wikipedia.org/wiki/Peer-to-peer_lending) company. _PeerLoan_ is modernizing how they handle risk assessment. They want to use machine learning to predict which loan holders have a high risk of being late on loan payments in the next quarter.
+Our fictional client _PeerLoan_ is a [peer to peer lending](https://en.wikipedia.org/wiki/Peer-to-peer_lending) company. _PeerLoan_ is modernizing how they handle risk assessment. They want to use machine learning to predict which loan holders have a high risk of being late on loan payments in the next quarter.
 
 Although you have tremendous amounts of freedom in designing this system, we don’t want you spend too much time on the project. After all this is a replacement for an interview, so plan on spending somewhere between 3-12 hours depending on your familiarity with the technology you choose.
 
 ## Your Tasks
 
-Your project will consist of the following two tasks. Because the MLE role is primarily an engineering role, we recommend applicants spend the majority of their effort on task 1 and only proceed to task 2 after task 1 is completed. 
+Your project will consist of the following two tasks. Because the MLE role is primarily an engineering role, we recommend applicants spend the majority of their effort on task 1 and only proceed to task 2 after task 1 is completed.
 
 ### Task 1: Deploy the Basic Model
-One of the data scientists has developed a basic model for predicting when loan holders will be late on their loan payment. Deploy this model and provide a REST API so other applications can submit a POST request and receive back prediction results. 
+One of the data scientists has developed a basic model for predicting when loan holders will be late on their loan payment. Deploy this model and provide a REST API so other applications can submit a POST request and receive back prediction results.
 
-First run the `predict-late-payers-basic-model.py` script which will train the model and save it using Python [pickle] (https://docs.python.org/3.7/library/pickle.html). Serve this model via REST API.
+First run the `predict-late-payers-basic-model.py` script which will train the model and save it using Python [pickle](https://docs.python.org/3.7/library/pickle.html). Serve this model via REST API.
 
 In order run the `predict-late-payers-basic-model.py` you will need a Python 3.7.2 environment that has all required packages installed. These dependancies are captured in the following files:
 
@@ -50,7 +50,7 @@ Now that we have a basic model in production, the team would like you to improve
 ## Time management ##
 **We cannot stress these two enough:**
 
-  1. Build the simplest possible solution first, utilizing tools you are familiar with when possible. 
+  1. Build the simplest possible solution first, utilizing tools you are familiar with when possible.
   2. Don’t get stuck on one aspect of the project. Ask questions and use the internet for research. Focus on your core strengths.
 
 ## Non-Requirements
@@ -66,7 +66,7 @@ The training data set is from a single financial quarter.
 The test data set is a random sample of data from the quarter immediately following the training set.
 
 ## One more Thing
-We wish you all the best as you work on this project and thank you again for your interest in phData. 
+We wish you all the best as you work on this project and thank you again for your interest in phData.
 If you have any suggestions for this project or our interview process, please **give us feedback.** Our goal is to make the interview process a positive experience for candidates and we are always interested in improving.
 
 
