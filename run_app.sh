@@ -1,3 +1,3 @@
 #! /bin/sh
 
-docker build -t loanapp -f app/env/Dockerfile .
+docker build -t loanapp -f app/container/Dockerfile .

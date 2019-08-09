@@ -1,6 +1,6 @@
 FROM continuumio/miniconda3:latest
 
-ADD app/env/conda_environment.yml .
+ADD app/container/conda_environment.yml .
 RUN conda env create -f ./conda_environment.yml
 
 
