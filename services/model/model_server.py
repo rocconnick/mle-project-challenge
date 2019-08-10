@@ -20,7 +20,7 @@ def get_sha1_hash(obj: Any) -> str:
     return h.hexdigest()
 
 
-def check_hash(model_blob: bytes) -> None:
+def check_hash(model_blob: bytes, model_sha: str) -> None:
     """
     Check validity of loaded model blob against expected hash.
 
@@ -38,23 +38,40 @@ def check_hash(model_blob: bytes) -> None:
                 MODEL_SHA: {os.environ['MODEL_SHA']}""")
 
 
-app = flask.Flask(__name__)
-model_sha = os.environ["MODEL_SHA"]
-model_path = os.path.join(os.environ["MODEL_DIR"],
-                          os.environ["MODEL_FILE_NAME"])
-model_blob = open(model_path, 'rb').read()
-check_hash(model_blob)
+def main() -> None:
+    """
+    Run the model server flask application.
 
+    Retrives path to model and SHA checksum from environment, loads model file,
+    and defines an API for retrieving the model.
+    """
 
-@app.route('/getModel', methods=['GET'])
-def get_model():
-    return model_blob
+    app = flask.Flask(__name__)
 
+    model_sha = os.environ["MODEL_SHA"]
+    model_path = os.path.join(os.environ["MODEL_DIR"],
+                              os.environ["MODEL_FILE_NAME"])
 
-@app.route('/getModelHash', methods=['GET'])
-def get_model_hash():
-    return model_sha
+    model_blob = open(model_path, 'rb').read()
+
+    check_hash(model_blob, model_sha)
+
+    @app.route('/getModel', methods=['GET'])
+    def get_model():
+        """
+        Return the loaded model blob.
+        """
+        return model_blob
+
+    @app.route('/getModelHash', methods=['GET'])
+    def get_model_hash():
+        """
+        Return the checksum of the loaded model.
+        """
+        return model_sha
+
+    app.run(host='0.0.0.0')
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    main()
