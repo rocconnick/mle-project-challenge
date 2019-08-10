@@ -22,20 +22,22 @@ def get_sha1_hash(obj: Any) -> str:
 
 def check_hash(model_blob: bytes, model_sha: str) -> None:
     """
-    Check validity of loaded model blob against expected hash.
+    Raise descriptive error if SHA1 hash differs from expected.
 
     Args:
         model_blob: bytes object read from model pickle
+        model_sha: expected SHA1 hash
 
     Raises:
         ValueError: if hash does not match
     """
-    if get_sha1_hash(model_blob) != model_sha:
+    model_blob_hash = hashlib.sha1(model_blob).hexdigest()
+    if model_blob_hash != model_sha:
         raise ValueError(
-            f"""SHA1 hash for file does not match MODEL_SHA in environment"
-                MODEL_DIR: {os.environ['MODEL_DIR']}
-                MODEL_FILE_NAME: {os.environ['MODEL_FILE_NAME']}
-                MODEL_SHA: {os.environ['MODEL_SHA']}""")
+            f"""
+            SHA1 hash for model file does not match MODEL_SHA in environment
+            expected: {model_sha}
+            found: {model_blob_hash}""")
 
 
 def main() -> None:
