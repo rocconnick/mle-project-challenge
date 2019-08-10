@@ -1,3 +1,4 @@
+import hashlib
 import json
 import requests
 
@@ -20,5 +21,16 @@ response = requests.post("http://localhost:5000/predict",
                          data=json.dumps(payLatePrediction),
                          headers=headers)
 
-print(response)
 print(response, response.text)
+
+hash_response = requests.get("http://localhost:5001/getModelHash",
+                              data=json.dumps(payLatePrediction),
+                              headers=headers)
+
+print(hash_response, hash_response.text)
+
+model_response = requests.get("http://localhost:5001/getModel",
+                              data=json.dumps(payLatePrediction),
+                              headers=headers)
+print(model_response,
+      hashlib.sha1(model_response.content).hexdigest() == hash_response.text)
