@@ -13,3 +13,17 @@ services:
     environment:
       MODEL_DIR: /etc/models
       MODEL_FILE_NAME: latePaymentsModel.pkl
+
+  model:
+    build:
+      context: ./services/model
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5000
+    volumes:
+      - ./models:/etc/models:ro
+    environment:
+      MODEL_DIR: /etc/models
+      MODEL_FILE_NAME: latePaymentsModel.pkl
+      MODEL_SHA: 0d1ce1a10c5df544b7b660f29a0ea02180dfd7f7
+
