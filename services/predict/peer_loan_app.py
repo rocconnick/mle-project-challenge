@@ -13,7 +13,7 @@ from sklearn import base
 MODEL_SERVER_URL = os.environ["MODEL_SERVER_URL"]
 
 
-def get_current_model_hash() -> str:
+def get_latest_model_hash() -> str:
     """
     Get the hash of the current model from the model server.
 
@@ -34,21 +34,40 @@ def get_current_model_blob() -> bytes:
 
 
 def load_model_from_blob(model_blob: bytes) -> base.BaseEstimator:
+    """
+    Deserialize model blob using pickle.
+
+    Args:
+        model_blob: binary-encoded model for deserialization
+
+    Returns:
+        Deserialized model
+    """
     return pickle.load(io.BytesIO(model_blob))
 
 
 def update_model(model: base.BaseEstimator,
                  model_hash: str
                  ) -> Tuple[base.BaseEstimator, str]:
-    current_model_hash = get_current_model_hash()
+    """
+    Ensure model is up to date, get new versions if changed.
 
-    if model_hash != current_model_hash:
+    Args:
+        model: currently-loaded model (deserialized)
+        model_hash: latest hash of currently-loaded model blob
+
+    Returns:
+        (latest deserialized model, latest deserialized model hash)
+    """
+    latest_model_hash = get_latest_model_hash()
+
+    if model_hash != latest_model_hash:
         new_model_blob = get_current_model_blob()
 
-        if hashlib.sha1(new_model_blob).hexdigest() != current_model_hash:
+        if hashlib.sha1(new_model_blob).hexdigest() != latest_model_hash:
             # TODO(drocco): implement retry/logging of model update failures
             return model, model_hash
-        return load_model_from_blob(new_model_blob), current_model_hash
+        return load_model_from_blob(new_model_blob), latest_model_hash
     return model, model_hash
 
 
