@@ -2,7 +2,6 @@ import io
 import hashlib
 import os
 import pickle
-import traceback
 from typing import Tuple
 
 import flask
@@ -80,7 +79,7 @@ def hello_world():
     return 'Hello, World!'
 
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
     global model, model_hash
     data = flask.request.get_json()
@@ -88,18 +87,13 @@ def predict():
 
     model, model_hash = update_model(model, model_hash)
 
-    prediction = model.predict_proba(input_df)
-    output = prediction[0]
-    return flask.jsonify(list(output))
+    prediction = model.predict(input_df)
+    prediction_proba = model.predict_proba(input_df)
+    output = {"prediction": int(prediction[0]),
+              "predict_proba": list(prediction_proba[0]),
+              "model_version": model_hash}
 
-
-@app.route('/getModelHash', methods=['GET'])
-def get_model_hash():
-    try:
-        response = requests.get(f"{MODEL_SERVER_URL}/getModelHash").text
-        return f"External hash: {response.text}"
-    except Exception:
-        return traceback.format_exc()
+    return flask.jsonify(output)
 
 
 if __name__ == '__main__':
