@@ -22,7 +22,7 @@ def get_latest_model_hash() -> str:
     return requests.get(f"{MODEL_SERVER_URL}/getModelHash").text
 
 
-def get_current_model_blob() -> bytes:
+def get_latest_model_blob() -> bytes:
     """
     Get the hash of the current model from the model server.
 
@@ -61,7 +61,7 @@ def update_model(model: base.BaseEstimator,
     latest_model_hash = get_latest_model_hash()
 
     if model_hash != latest_model_hash:
-        new_model_blob = get_current_model_blob()
+        new_model_blob = get_latest_model_blob()
 
         if hashlib.sha1(new_model_blob).hexdigest() != latest_model_hash:
             # TODO(drocco): implement retry/logging of model update failures
@@ -71,7 +71,8 @@ def update_model(model: base.BaseEstimator,
 
 
 app = flask.Flask(__name__)
-model, model_hash = update_model(bytes(), '')
+model = load_model_from_blob(get_latest_model_blob())
+model_hash = get_latest_model_hash()
 
 
 @app.route('/predict', methods=['POST'])
