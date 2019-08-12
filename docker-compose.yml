@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+
+  predict:
+    build:
+      context: ./services/predict
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    environment:
+      MODEL_SERVER_URL: http://model:5000
+
+
+  model:
+    build:
+      context: ./services/model
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5000
+    volumes:
+      - ./models:/etc/models:ro
+    environment:
+      MODEL_DIR: /etc/models
+      MODEL_FILE_NAME: latePaymentsModel.pkl
+      MODEL_SHA: 0d1ce1a10c5df544b7b660f29a0ea02180dfd7f7
+
