@@ -5,10 +5,10 @@
 This repository is forked from the
 [phData Machine Learning Engineer Candidate Project](https://github.com/phdata/mle-project-challenge)
 repository.
-Please head over there for a complete description of the prompt.
+Please head over there for a complete description of the problem statement.
 
 In short, the tasks are to:
-1) Deploy a machine learning model serialized as a python pickle
+1) Deploy a pre-trained machine learning model as a REST API
 2) Make improvements to the model using data-science techniques
 
 
@@ -21,13 +21,13 @@ method: `predict()`.
 Users can submit a JSON-formatted POST request containing the model-input
 features and receive predictions back.
 
-Behind the scenes, the service is factored into two service components:
+Behind the scenes, the service is factored into two components:
 the external API and an internal service that tracks and returns the most
 up-to-date serialized model as a blob.  Factoring in this way
 allows the external API to remain running when deploying a new version
 of the model to the internal model service.
 
-The model service itself is yet another Flask application.
+The internal model service is yet another Flask application.
 It is possible that an open-source data server could serve this purpose well;
 however, writing a custom application allowed implementation of desired
 validation features without combing through documentation for
@@ -55,9 +55,9 @@ A summary is provided below to reduce the need to read the notebook carefully.
 
 Overview of model-improvement effort:
 * A quick exploration of the features and labels was added.
-* Accuracy was not a good metric.  This dataset has extreme class imbalance, and the predicted late-payer scores rarely rise above the default 50% threshold.  Even precision and recall won't tell much.  To better evaluate performance, we look at ROC-AUC; this can be interpreted as the probability that two randomly sampled predicted late-payer scores are ranked appropriately.
+* Accuracy was not a good metric.  This dataset has extreme class imbalance, and the predicted late-payer scores rarely, if ever, rise above the default 50% threshold.  Even precision and recall won't tell much.  To better evaluate performance, we look at ROC-AUC; this can be interpreted as the probability that two randomly-sampled predictions are ranked appropriately.  Given that model predictions will be used to compare lending opportunities, interpreting ROC in its probablistic sense seems appropriate.
 * Based on the metric above, the hyperparameters of the original random-forest model was optimized using a cross-validated grid search.  This improved ROC-AUC score on the test set, but the train and test set were still out of line, indicating poor generalization.
-* A gradient-boosted classifier was trained with default parameters since these models generally work well out of the box.  The ROC-AUC on the test set slightly outperformed the optimized random-forest model, but was much closer to that of the train set, suggesting this model generalizes better.
+* A gradient-boosted classifier was trained with default parameters since these models generally work well out of the box.  The ROC-AUC on the test set slightly outperformed the optimized random-forest model, but was much closer to that of the train set.  This suggests an improvement in the generalization of the probability scores output by the model.
 
 ![ROC Curve](img/roc_auc.png "ROC Curve")
 
@@ -66,15 +66,16 @@ Overview of model-improvement effort:
 * The service doesn't have any sort of load balancing.  Truly scaling
 the service would require multiple instances of the containers on a cluster
 and appropriate request routing.
-* The service doesn't log anything.  In a real setting, it is absolutely
-necessary to log predictions and also monitor errors.
-* There could be a lot more testing.  The internal model service
-has some unit tests, but the prediction service doesn't; and there
+* The service doesn't have any external logging.  In a real deployment,
+it is absolutely necessary to log predictions and
+also monitor system errors on a scaleable logging platform.
+* There could be a more testing in this repository.  The internal model service
+has some unit tests, but the prediction service doesn't, and there
 should be a lot more in the way of integration tests.
 * Using a docker volume as an object store for the model is a cheap hack.
 In a complete solution, this should be a more robust storage option.
 * Using Miniconda as the base container image was a weird choice.  It seemed
-attractive based on the ability to configure packages via yaml, but conda
+attractive based on the ability to configure packages via neat YAML files, but conda
 always seems to add unnecessary cruft and the documentation isn't great.
 * There isn't any web interface or anything to demo predictions,
 that would have been neat to implement.
