@@ -25,6 +25,7 @@ dependencies:
   - python-dateutil=2.7.5=py37_0
   - pytz=2018.9=py37_0
   - readline=7.0=h1de35cc_5
+  - requests==2.22.0
   - scikit-learn=0.20.2=py37h27c97d8_0
   - seaborn
   - scipy=1.2.1=py37h1410ff5_0
