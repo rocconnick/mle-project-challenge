@@ -74,11 +74,6 @@ app = flask.Flask(__name__)
 model, model_hash = update_model(bytes(), '')
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-
 @app.route('/predict', methods=['POST'])
 def predict():
     global model, model_hash
