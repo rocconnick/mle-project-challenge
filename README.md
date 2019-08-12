@@ -1,73 +1,133 @@
 ![phData Logo](img/phData_color_rgb.jpg "phData Logo")
 
-# Machine Learning Engineer Candidate Project
+# Machine Learning Engineer Candidate Project Solution
 
-phData does not believe in traditional interviews as they do not reflect the working process in the real world. In the real world, you’ll be given project-based work as part of a team and will have time to perform research to solve the assigned task. As such, phData interviews are project-based.
+This repository is forked from the
+[phData Machine Learning Engineer Candidate Project](https://github.com/phdata/mle-project-challenge)
+repository.
+Please head over there for a complete description of the prompt.
 
-This project is for the machine learning engineer (MLE) role. We recognize there may be many definitions for a machine learning engineer, at phData we define this role as follows: 
-
-> The MLE works in cooperation with data science teams by providing the engineering support for model deployment, monitoring, and retraining. The MLE is often not directly involved in the data discovery and model development process, though it is helpful for MLEs to have proficient domain knowledge in this area. See [this article] (https://www.oreilly.com/ideas/data-engineers-vs-data-scientists) for more discussion on these various roles.
-
-If you are more interested in another role such as dev ops or data engineering, please inform your contact you’ve been given the wrong project. After completing the assignment, you’ll be requested to provide a short demo of the work you’ve completed and the thought process you used.
-
-We would like to have the opportunity to review your solution before presenting. Please add your project to a private GitHub repository and share the link with our recruiter.  If you don’t have a GitHub account, you can create one for free at [github.com] (https://github.com/).
-
-## Overview
-
-Our fictional client _PeerLoan_ is a [peer to peer lending] (https://en.wikipedia.org/wiki/Peer-to-peer_lending) company. _PeerLoan_ is modernizing how they handle risk assessment. They want to use machine learning to predict which loan holders have a high risk of being late on loan payments in the next quarter.
-
-Although you have tremendous amounts of freedom in designing this system, we don’t want you spend too much time on the project. After all this is a replacement for an interview, so plan on spending somewhere between 3-12 hours depending on your familiarity with the technology you choose.
-
-## Your Tasks
-
-Your project will consist of the following two tasks. Because the MLE role is primarily an engineering role, we recommend applicants spend the majority of their effort on task 1 and only proceed to task 2 after task 1 is completed. 
-
-### Task 1: Deploy the Basic Model
-One of the data scientists has developed a basic model for predicting when loan holders will be late on their loan payment. Deploy this model and provide a REST API so other applications can submit a POST request and receive back prediction results. 
-
-First run the `predict-late-payers-basic-model.py` script which will train the model and save it using Python [pickle] (https://docs.python.org/3.7/library/pickle.html). Serve this model via REST API.
-
-In order run the `predict-late-payers-basic-model.py` you will need a Python 3.7.2 environment that has all required packages installed. These dependancies are captured in the following files:
-
-- `env-setup/conda_environment.yml`
-- `env-setup/pip_requirements.txt`
-
-Use either *Conda* (preferred) or *Pip* along with the corresponding file to create your Python environment.
-
-### Task 2: Improve the Model and Redeploy
-Now that we have a basic model in production, the team would like you to improve the model. Use what you know about data science best practices to improve the current model. Once your updated model is trained, deploy it to the REST API.
-
-#### Requirements
-- The model should be callable by REST API and should return prediction results.
-- Consider how your solution would scale as more users call the API. If possible, design a solution that allows scaling up or scaling down of API resources without stopping the service.
-- Consider how updated versions of the model will be deployed. If possible, develop a solution that allows new versions of the model to be deployed without stopping the service.
-
-#### Recommendations
-- We recommend using [Docker](https://docs.docker.com/get-started/) to containerize and deploy the model. However, feel free to use a different technology if there is one you are more familiar with.
-- In addition to Docker, you'll need to use several other components to create a scalable REST API. Google is your friend here, do some web searching to figure out what other components are needed to deploy a scaleable REST API for a Python application.
-- For the updated model use a traditional machine learning algorithm (no need for deep learning). Build out an 80% solution. Don't invest time in getting the maximum prediction performance. This is not a Kaggle competition.
-
-## Time management ##
-**We cannot stress these two enough:**
-
-  1. Build the simplest possible solution first, utilizing tools you are familiar with when possible. 
-  2. Don’t get stuck on one aspect of the project. Ask questions and use the internet for research. Focus on your core strengths.
-
-## Non-Requirements
-- **Completing in a specific amount of time.** Life is busy and chaotic. We understand you will not be able to work full time on this project.
-- **There is no need to run this code at scale.** Everything can be done on a laptop running [Docker Desktop](https://www.docker.com/products/docker-desktop), there is no need to deploy your code to a cloud service or cluster.
-- **A Certain level of prediction quality.** We're not interested in in getting the absolute best predictive performance for the model, don't devote too much time to improving the model. Rather we're interested in your understanding of data science concepts and your ability explain the decisions you made.
-- **An exact end result.** Two candidates given this assignment will find different solutions. Feel free to choose your own adventure as long as the base requirements are met.
-
-## About the Dataset ##
-The file `peerLoanData.zip` contains a training set, a test set and data dictionary explaining each feature. The dataset is based off data from [LendingClub](https://www.lendingclub.com/). Some records and columns were removed in the interest of making the data set more manageable for this project.
-
-The training data set is from a single financial quarter.
-The test data set is a random sample of data from the quarter immediately following the training set.
-
-## One more Thing
-We wish you all the best as you work on this project and thank you again for your interest in phData. 
-If you have any suggestions for this project or our interview process, please **give us feedback.** Our goal is to make the interview process a positive experience for candidates and we are always interested in improving.
+In short, the tasks are to:
+1) Deploy a machine learning model serialized as a python pickle
+2) Make improvements to the model using data-science techniques
 
 
+## Solution Overview
 
+### Task One: Deploy the model
+
+The model is deployed as a Flask web service.  The external API has only one
+method: `predict()`.
+Users can submit a JSON-formatted POST request containing the model-input
+features and receive predictions back.
+
+Behind the scenes, the service is factored into two service components:
+the external API and an internal service that tracks and returns the most
+up-to-date serialized model as a blob.  Factoring in this way
+allows the external API to remain running when deploying a new version
+of the model to the internal model service.
+
+The model service itself is yet another Flask application.
+It is possible that an open-source data server could serve this purpose well;
+however, writing a custom application allowed implementation of desired
+validation features without combing through documentation for
+an external library.
+
+For this prototype, the internal model service pulls the model from a
+read-only Docker volume.
+In a production setting, a different object store would be recommended, such
+as one from a cloud provider, e.g. Amazon S3.
+
+The services run in docker containers, launched locally using docker-compose.
+To scale the service, these containers could be deployed using Kubernetes
+or a managed container service from a cloud provider.
+
+To run in Docker Desktop, the services are configured in `docker-compose.yml`.
+The Dockerfiles and python code for the services can be found in the
+`services` directory.
+
+### Task Two: Improve the model
+
+This task was completed somewhat hastily and the code is still sloppy.
+The code from `predict-late-payers-basic-model.py` was pasted into
+`improve_model.ipynb` and adapted slightly.
+A summary is provided below to reduce the need to read the notebook carefully.
+
+Overview of model-improvement effort:
+* A quick exploration of the features and labels was added.
+* Accuracy was not a good metric.  This dataset has extreme class imbalance, and the predicted late-payer scores rarely rise above the default 50% threshold.  Even precision and recall won't tell much.  To better evaluate performance, we look at ROC-AUC; this can be interpreted as the probability that two randomly sampled predicted late-payer scores are ranked appropriately.
+* Based on the metric above, the hyperparameters of the original random-forest model was optimized using a cross-validated grid search.  This improved ROC-AUC score on the test set, but the train and test set were still out of line, indicating poor generalization.
+* A gradient-boosted classifier was trained with default parameters since these models generally work well out of the box.  The ROC-AUC on the test set slightly outperformed the optimized random-forest model, but was much closer to that of the train set, suggesting this model generalizes better.
+
+![ROC Curve](img/roc_auc.png "ROC Curve")
+
+### Shortcomings
+
+* The service doesn't have any sort of load balancing.  Truly scaling
+the service would require multiple instances of the containers on a cluster
+and appropriate request routing.
+* The service doesn't log anything.  In a real setting, it is absolutely
+necessary to log predictions and also monitor errors.
+* There could be a lot more testing.  The internal model service
+has some unit tests, but the prediction service doesn't; and there
+should be a lot more in the way of integration tests.
+* Using a docker volume as an object store for the model is a cheap hack.
+In a complete solution, this should be a more robust storage option.
+* Using Miniconda as the base container image was a weird choice.  It seemed
+attractive based on the ability to configure packages via yaml, but conda
+always seems to add unnecessary cruft and the documentation isn't great.
+* There isn't any web interface or anything to demo predictions,
+that would have been neat to implement.
+
+## Running this code
+
+### Generate the original model
+
+Unpack the zip archive with the data, build the conda environment, and run
+`predict-late-payers-basic-model.py`.
+Requires Anaconda to be installed.
+
+```bash
+unzip data/peerLoanData.zip -d data/
+conda env create -f env-setup/conda_environment.yml
+source activate loanModel
+python predict-late-payers-basic-model.py
+```
+
+### Start the services
+
+Start the services with Docker Compose.
+Requires Docker Desktop.
+
+```bash
+docker-compose up --build -d
+```
+
+You can send a request to the server using `make_test_request.py`.
+
+```bash
+python make_test_request.py
+```
+
+### Build the and analyze improved models
+
+Start a jupyter notebook server and use the loanModel conda environment
+to run the notebook.
+This is a pain in the butt of a process, I know.
+
+### Deploy a new model
+
+Modify the model service in `docker-compose.yml` with a new
+file name and model hash.
+Then relaunch the only the model service, while keeping the
+external prediction service running:
+
+```
+docker-compose up -d --build model
+```
+
+### Shut down the service
+
+```bash
+docker-compose down
+```
