@@ -76,8 +76,12 @@ model_hash = get_latest_model_hash()
 
 
 @app.route('/predict', methods=['POST'])
-def predict():
+def predict() -> str:
+    """
+    Return model predictions as JSON string.
+    """
     global model, model_hash
+    # TODO(drocco): implement input schema validation here
     data = flask.request.get_json()
     input_df = pd.DataFrame.from_dict(data)
 
