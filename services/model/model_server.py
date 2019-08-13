@@ -1,23 +1,7 @@
 import os
 import hashlib
-from typing import Any
 
 import flask
-
-
-def get_sha1_hash(obj: Any) -> str:
-    """
-    Get the SHA1 hash of an object.
-
-    Args:
-        obj: python object to take hash
-
-    Returns:
-        Hex digest of SHA1 has for object
-    """
-    h = hashlib.sha1()
-    h.update(obj)
-    return h.hexdigest()
 
 
 def check_hash(model_blob: bytes, model_sha: str) -> None:
