@@ -1,3 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Raleway:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Raleway'; }
+      h1, h2, h3 {
+        font-family: 'Raleway';
+        font-weight: bold;
+      }
+
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
 # Machine Learning Engineer Candidate Project
 
 ---
@@ -10,12 +31,17 @@
 
 * Implemented as Docker containers to allow scaling via container orchestration
 
-### Not included in solution
+---
+
+## Not included in solution
 
 * Load balancing and proxy - Kubernetes or cloud container service can handle that
+
 * Web interface for users to manually submit requests
-* External logging - any number of loging services could be selected and integrated
-* More integration/unit testing - I played a bit fast and loose here, there's not a boatload of actual logic
+
+* External logging - any number of loging services could be integrated
+
+* More integration/unit testing - not a lot of logic here, played fast & loose
 
 ---
 
@@ -96,11 +122,31 @@ def predict() -> str:
     * Accuracy/precision/recall all don't measure anything meaningful
     * ROC-AUC is better, appropriate interpretation: "probability two randomly sampled predictions are ranked correctly"
 
-| Model                   | Train AUC | Test AUC | Comment                               |
-|-------------------------|:---------:|:--------:|---------------------------------------|
-| Original Random Forest  |    1.0    | 0.62     | Terrible generalization               |
-| Optimized Random Forest |    0.85   | 0.74     | Better test score, but still overfit  |
-| Gradient Boosted Model  |    0.75   | 0.75     | Best performance, good generalization |
+---
+class: center
+
+## Improved Models
+
+
+
+| Model                   | Train AUC | Test AUC | Comment                             |
+|-------------------------|:---------:|:--------:|-------------------------------------|
+| Original Random Forest  |    1.0    | 0.62     | Poor generalization                 |
+| Optimized Random Forest |    0.85   | 0.74     | Better, still overfit               |
+| Gradient Boosted Model  |    0.75   | 0.75     | Good performance &  generalization  |
+
+
 
 ![ROC Curve](img/roc_auc.png "ROC Curve")
 
+
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create({ ratio: "16:9" });
+    </script>
+  </body>
+</html>
