@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Title</title>
+    <title>phData MLE Project Solution</title>
     <meta charset="utf-8">
     <style>
       @import url(https://fonts.googleapis.com/css?family=Raleway:400,700,400italic);
@@ -23,9 +23,22 @@
 
 ---
 
-## Design
+## About Me
 
-* Factored into two services to allow API to remain active during update:
+* At work
+  * Particle-physics PhD: computer vision, 100+ TB datasets, "grid" processing
+  * Data science at 3M: ML/DL/NLP algorithm development on millions of health records
+
+* Outside of work
+  * Ride bikes
+  * Travel and hike
+  * Grow, cook, and eat food
+
+---
+
+## Project Solution Design
+
+* Factored into two services so API to remains active during model update
     * Internal model service – versions and serves latest serialized model
     * External API – serves up predictions via POST request
 
@@ -33,7 +46,7 @@
 
 ---
 
-## Not included in solution
+## Solution Shortcomings
 
 * Load balancing and proxy - Kubernetes or cloud container service can handle that
 
@@ -41,13 +54,15 @@
 
 * External logging - any number of loging services could be integrated
 
-* More integration/unit testing - not a lot of logic here, played fast & loose
+* Lots of sugar – not a lot of logic here, played fast & loose
+      * Integration/unit tests
+      * Schema validation
 
 ---
 
 ## Implementation
 
-* Both services are Flask applications
+* Both services are Flask applications in Docker containers
 
 * Using Miniconda as a base Docker image
     * Advantage: environment YAML files are easy to read
@@ -73,8 +88,10 @@ CMD ["conda", "run", "-n", "loanApp", "python", "predict.py"]
 ## Predict API Details
 
 * Predict API just makes predictions, does not handle model files
-* Model itself is updated (if necessary) on every request
-* Output includes model hash, predicted probability, and class label
+
+* Model version checked on every request, updated if necessary
+
+* Output includes model version, predicted probability, and class label
 
 ```python
 @app.route('/predict', methods=['POST'])
@@ -107,39 +124,70 @@ def predict() -> str:
     * Model just stored on a Docker volume for this prototype
     * Should really be something like Amazon S3 or other scaleable object store
 
-* Custom Flask application to handle versioning of model
+* Custom Flask application for desired model-versioning scheme (better open-source options?)
     * Model version is tracked via SHA hash
     * File "URI" and hash are configured in `docker-compose.yml`
     * Hash is validated internally
 
+```yaml
+model:
+    build:
+      context: ./services/model
+      dockerfile: Dockerfile
+    volumes:
+      - ./models:/etc/models:ro
+    environment:
+      MODEL_DIR: /etc/models
+      MODEL_FILE_NAME: latePaymentsModel.pkl
+      MODEL_SHA: 0d1ce1a10c5df544b7b660f29a0ea02180dfd7f7
+
+
+```
 * Model server can be restarted with a new model while predict API remains running
 
 ---
 
 ## Model Improvement
 
+* Added some exploratory plots and figures, model inputs looked decent enough for ML
+  * descriptive stats: some extreme outliers, e.g. income variable (decision trees are robust though)
+  * histograms: inlier values reasonably distributed; categoricals have just a few values
+  * null counts: no features had extreme null rates
+
 * Extreme class imbalance - late-payment probability never exceeds 50% for test set
     * Accuracy/precision/recall all don't measure anything meaningful
     * ROC-AUC is better, appropriate interpretation: "probability two randomly sampled predictions are ranked correctly"
 
+* Optimized Random-Forest model with cross-validated grid search; tried Gradient Boosted Model
+
+```python
+param_grid = {"classifier__n_estimators": [10, 20, 30],
+              "classifier__max_depth": [3, 10, 20],
+              "classifier__class_weight": ["balanced", None],
+              "preprocess__num__scaler": [RobustScaler(), None]
+              }
+```
+
 ---
-class: center
-
-## Improved Models
+## Model Improvement Results
 
 
 
-| Model                   | Train AUC | Test AUC | Comment                             |
-|-------------------------|:---------:|:--------:|-------------------------------------|
+| Model                   | Train AUC | Test AUC |                              |
+|:------------------------|:---------:|:--------:|:------------------------------------|
 | Original Random Forest  |    1.0    | 0.62     | Poor generalization                 |
 | Optimized Random Forest |    0.85   | 0.74     | Better, still overfit               |
 | Gradient Boosted Model  |    0.75   | 0.75     | Good performance &  generalization  |
 
-
-
+<br />
+<br />
+.right[
 ![ROC Curve](img/roc_auc.png "ROC Curve")
+]
 
-
+---
+class: middle, center
+## Demo
 
 
     </textarea>
