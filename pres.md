@@ -10,6 +10,15 @@
 
 * Implemented as Docker containers to allow scaling via container orchestration
 
+### Not included in solution
+
+* Load balancing and proxy - Kubernetes or cloud container service can handle that
+* Web interface for users to manually submit requests
+* External logging - any number of loging services could be selected and integrated
+* More integration/unit testing - I played a bit fast and loose here, there's not a boatload of actual logic
+
+---
+
 ## Implementation
 
 * Both services are Flask applications
@@ -33,7 +42,7 @@ EXPOSE 5000
 CMD ["conda", "run", "-n", "loanApp", "python", "predict.py"]
 ```
 
-
+---
 
 ## Predict API Details
 
@@ -62,10 +71,14 @@ def predict() -> str:
 
     return flask.jsonify(output)
 ```
+
+---
+
+
 ## Model Server Details
 
 * Loads serialized model from object store
-    * Just a Docker volume for this prototype
+    * Model just stored on a Docker volume for this prototype
     * Should really be something like Amazon S3 or other scaleable object store
 
 * Custom Flask application to handle versioning of model
@@ -75,16 +88,19 @@ def predict() -> str:
 
 * Model server can be restarted with a new model while predict API remains running
 
-## Quirks/Shortcomings
+---
 
 ## Model Improvement
 
-## Demo
+* Extreme class imbalance - late-payment probability never exceeds 50% for test set
+    * Accuracy/precision/recall all don't measure anything meaningful
+    * ROC-AUC is better, appropriate interpretation: "probability two randomly sampled predictions are ranked correctly"
 
-* Commands to run
-* Swap models
-* Restart model server
+| Model                   | Train AUC | Test AUC | Comment                               |
+|-------------------------|:---------:|:--------:|---------------------------------------|
+| Original Random Forest  |    1.0    | 0.62     | Terrible generalization               |
+| Optimized Random Forest |    0.85   | 0.74     | Better test score, but still overfit  |
+| Gradient Boosted Model  |    0.75   | 0.75     | Best performance, good generalization |
 
-
-
+![ROC Curve](img/roc_auc.png "ROC Curve")
 
